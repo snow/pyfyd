@@ -1,0 +1,6 @@
+requirments
+===============
+* python-oauth
+* python-openid
+* python-tweepy
+* python-flickrapi
