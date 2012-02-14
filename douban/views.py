@@ -9,8 +9,8 @@ from django.contrib.auth import authenticate, login
 #from pyfyd.models import DuplicatedUsername
 from pyfyd.utils import ThirdpartyAuthBackend
 from pyfyd.models import DoubanAccount
-from pyfyd.douban import OAuthClient2
 from pyfyd.common.views import AuthStartMixin, AuthenticateReturnMixin
+from clients import OAuthClient2
 
 class BaseV(View):
     '''Base class for all views that will use douban oauth client'''

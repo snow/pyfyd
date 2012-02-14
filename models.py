@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 from tweepy import OAuthHandler, API
-from douban import OAuthClient2 
+from douban.clients import OAuthClient2 
         
 class AccountUtilsMixin(object):
     '''Set of util methods for external account'''
