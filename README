@@ -1,6 +1,7 @@
 requirments
 ===============
-* python-oauth
+* python-oauth # will move to oauth2 in future
+* python-oauth2 # douban client use this
 * python-openid
 * python-tweepy
 * python-flickrapi
