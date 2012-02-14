@@ -6,6 +6,7 @@ migrations
 # eclipse project config
 .project
 .pydevproject
+.settings
 # db
 sqlite3.db
 data.txt
