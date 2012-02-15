@@ -3,19 +3,27 @@ from celery.task import task
 from clients import OAuthClient2
 from pyfyd.models import DoubanAccount
 
+def _sanitize_str(str_):
+    return str_.replace('&nbsp;', '').encode('utf-8')
+
 class Saying(object):
     content = ''
-    TEMPLATE = u'''<?xml version='1.0' encoding='UTF-8'?>
-<entry xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:db="http://www.douban.com/xmlns/">
+    TEMPLATE = '''<?xml version='1.0' encoding='UTF-8'?>
+<entry xmlns:ns0="http://www.w3.org/2005/Atom" 
+        xmlns:db="http://www.douban.com/xmlns/">
 <content>{content}</content>
 </entry>'''
     
     def __init__(self, content=''):
-        self.content = content
-        
+        self.content = _sanitize_str(content)
+    
+    __body = None
     @property
     def body(self):
-        return self.TEMPLATE.format(content=self.content).encode('utf-8')
+        if None == self.__body:
+            self.__body = self.TEMPLATE.format(content=self.content)
+        
+        return self.__body
     
 
 class Note(object):
@@ -24,7 +32,7 @@ class Note(object):
     __privacy = 'private'
     __can_reply = 'yes'
     
-    TEMPLATE = u'''<?xml version="1.0" encoding="UTF-8"?>
+    TEMPLATE = '''<?xml version="1.0" encoding="UTF-8"?>
 <entry xmlns="http://www.w3.org/2005/Atom"
 xmlns:db="http://www.douban.com/xmlns/">
 <title>{title}</title>
@@ -34,8 +42,8 @@ xmlns:db="http://www.douban.com/xmlns/">
 </entry>'''
     
     def __init__(self, title='', content='', privacy='private', can_reply='yes'):
-        self.title = title
-        self.content = content
+        self.title = _sanitize_str(title)
+        self.content = _sanitize_str(content)
         self.privacy = privacy
         self.can_reply = can_reply
         
@@ -60,12 +68,17 @@ xmlns:db="http://www.douban.com/xmlns/">
             self.__privacy = privacy
         else:
             raise Exception('valid privacy values are: public, friend, private')
-        
+    
+    __body = None
     @property
     def body(self):
-        return self.TEMPLATE.format(title=self.title, content=self.content, 
-                                    privacy=self.privacy, 
-                                    can_reply=self.can_reply).encode('utf-8')
+        if None == self.__body:
+            self.__body = self.TEMPLATE.format(title=self.title, 
+                                               content=self.content, 
+                                               privacy=self.privacy, 
+                                               can_reply=self.can_reply)
+        return self.__body
+    
 
 def _post(uri, post, account):        
     if not isinstance(account, DoubanAccount):
